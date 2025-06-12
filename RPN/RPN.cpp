@@ -5,8 +5,31 @@ enum OpCode {
     OP_SUBTRACT,
     OP_MULTIPLY,
     OP_DIVIDE,
+    OP_POWER,
     OP_NEGATE,
-    OP_ABS
+    OP_ABS,
+    OP_LOG10,
+    OP_LN,
+    OP_LOGB
+};
+
+const std::map<std::string, std::tuple<OpCode, std::string, int>> op_map = {
+    {"+",    std::make_tuple(OP_ADD, "addition", 2)},
+    {"-",    std::make_tuple(OP_SUBTRACT, "subtraction", 2)},
+    {"*",    std::make_tuple(OP_MULTIPLY, "multiplication", 2)},
+    {"/",    std::make_tuple(OP_DIVIDE, "division", 2)},
+    {"^",    std::make_tuple(OP_POWER, "power", 2)},
+    {"**",   std::make_tuple(OP_POWER, "power (alias)", 2)},
+    {"neg",  std::make_tuple(OP_NEGATE, "negation", 1)},
+    {"abs",  std::make_tuple(OP_ABS, "absolute value", 1)},
+    {"log",  std::make_tuple(OP_LOG10,  "base 10 logarithm", 1)},
+    {"ln",   std::make_tuple(OP_LN, "natural logarithm", 1)},
+    {"logb", std::make_tuple(OP_LOGB, "logarithm with base b", 2)}
+};
+
+const std::map<std::string, std::tuple<double, std::string>> const_map = {
+    {"pi", std::make_tuple(std::numbers::pi, "π")},
+    {"e",  std::make_tuple(std::numbers::e, "e (Euler's constant)") }
 };
 
 struct Operator {
@@ -14,14 +37,12 @@ struct Operator {
 	OpCode opcode; // Operator symbol
 	int operands; // Number of operands required
 	Operator(const std::string& o): token(o) {
-        if (o == "+") opcode = OP_ADD;
-        else if (o == "-") opcode = OP_SUBTRACT;
-        else if (o == "*") opcode = OP_MULTIPLY;
-        else if (o == "/") opcode = OP_DIVIDE;
-        else if (o == "neg") opcode = OP_NEGATE;
-        else if (o == "abs") opcode = OP_ABS;
-		else throw std::runtime_error("Unknown operator: " + o);
-		operands = (opcode == OP_NEGATE || opcode == OP_ABS) ? 1 : 2; // Unary operators have 1 operand, others have 2
+		auto it = op_map.find(o);
+        if (it == op_map.end()) {
+            throw std::runtime_error("Unknown operator: " + o);
+		}
+		opcode = std::get<0>(it->second);
+		operands = std::get<2>(it->second);
     }
 
 
@@ -53,24 +74,67 @@ struct Operator {
                 if (b == 0.0) throw std::runtime_error("Division by zero");
                 return a / b;
             case OP_NEGATE: return a != 0 ? -a: a;
+            case OP_POWER:
+                if (a < 0 && b != static_cast<int>(b)) 
+                    throw std::runtime_error("Negative base with non-integer exponent");
+				return std::pow(a, b);
             case OP_ABS: return std::abs(a);
+            case OP_LOG10:
+                if (a <= 0) throw std::runtime_error("Logarithm domain error");
+                    return std::log10(a);
+            case OP_LN:
+                if (a <= 0) throw std::runtime_error("Logarithm domain error");
+                    return std::log(a);
+            case OP_LOGB:
+                if (a <= 0 || b <= 0 || b == 1) throw std::runtime_error("Logarithm domain error");
+                   return std::log(a) / std::log(b);
             default: throw std::runtime_error("Unknown operator code");
         }
     }
 };
 
-Operator operators[] = {
-    {"+"},
-    {"-"},
-    {"*"},
-    {"/"},
-    {"neg"}, // Unary operator
-    {"abs"} // Unary operator
-};
+bool is_constant(const std::string& token) {
+    return const_map.find(token) != const_map.end();
+}
+
+bool is_number(const std::string& token) {
+    if (token.empty()) return false;
+	if (is_constant(token) || token[0] == '-' && is_constant(token.substr(1))) return true; // Check if it's a constant
+    if (token.size() > 1 && token[0] == '-' && std::isdigit(token[1])) {
+        return std::all_of(token.begin() + 1, token.end(), ::isdigit);
+    }
+    return std::all_of(token.begin(), token.end(), ::isdigit);
+}
+
+double to_number(const std::string& token) {
+    if (is_constant(token)) {
+        return std::get<0>(const_map.at(token));
+    }
+    if (token[0] == '-' && is_constant(token.substr(1))) {
+        return -std::get<0>(const_map.at(token.substr(1)));
+    }
+    return std::stod(token);
+}
+
+void help(bool printStatusMessage = true) {
+    std::cout << "Available operators:\n";
+    for (const auto& [op, info] : op_map) {
+        auto operands = std::get<2>(info);
+        std::cout << op << ": " << std::get<1>(info) << " (requires " << operands << " operand" << (operands > 1 ? "s": "") << ")\n";
+	}
+    std::cout << "Available constants:\n";
+    for (const auto& [constant, info] : const_map) {
+		std::cout << constant << ": " << std::get<1>(info) << " (value: " << std::get<0>(info) << ")\n";
+    }
+    if (printStatusMessage)
+        std::cout << "Enter 'exit' to quit.\n";
+}
 
 int main() {
     std::string line;
-    std::cout << "RPN Calculator. Enter expression or 'exit':\n";
+    std::cout << "RPN Calculator.\n";
+	help(false); // Print help without status message
+    std::cout << "Enter expression or 'exit':\n";
 
     while (true) {
         std::cout << "> ";
@@ -81,15 +145,22 @@ int main() {
         std::string token;
 
         try {
+			bool help_parsed = false; // Reset help flag for each new line
             while (iss >> token) {
-                if (std::isdigit(token[0]) || (token.size() > 1 && token[0] == '-' && std::isdigit(token[1]))) {
-                    stack.push(std::stod(token));
+                if (token == "help") {
+                    help();
+					help_parsed = true; // Set help flag to true
+                    continue;
+				}
+                if (is_number(token)) {
+                    stack.push(to_number(token));
                 }
                 else {
                     stack.push(Operator(token).apply(stack));
                 }
             }
 
+			if (help_parsed) continue; // Skip result output if help was requested
             if (stack.size() != 1) throw std::runtime_error("Invalid expression");
             std::cout << "Result: " << stack.top() << "\n";
         }
