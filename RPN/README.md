@@ -1,10 +1,11 @@
 # RPN Calculator (C++)
 
-A minimal reverse polish notation (RPN) calculator written in modern C++.
+A simple Reverse Polish Notation (RPN) calculator written in modern C++.
 
 ## Features
 
-- Basic arithmetic: `+`, `-`, `*`, `/`
+- Basic arithmetic: `+`, `-`, `*`, `/`, 'neg' (negation), 'abs' (absolute value)
+- Complex operators '^', '**' (power), 'ln' (natural logarithm), 'log' (base 10 logarithm), 'logn' (logarithm base n)
 - Error handling (invalid input, division by zero)
 - Interactive REPL loop
 

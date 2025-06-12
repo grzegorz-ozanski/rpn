@@ -24,7 +24,7 @@ const std::map<std::string, std::tuple<OpCode, std::string, int>> op_map = {
     {"abs",  std::make_tuple(OP_ABS, "absolute value", 1)},
     {"log",  std::make_tuple(OP_LOG10,  "base 10 logarithm", 1)},
     {"ln",   std::make_tuple(OP_LN, "natural logarithm", 1)},
-    {"logb", std::make_tuple(OP_LOGB, "logarithm with base b", 2)}
+    {"logn", std::make_tuple(OP_LOGB, "logarithm with base n", 2)}
 };
 
 const std::map<std::string, std::tuple<double, std::string>> const_map = {
