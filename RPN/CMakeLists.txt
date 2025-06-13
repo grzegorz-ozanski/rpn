@@ -3,7 +3,10 @@
 #
 
 # Dodaj źródło do pliku wykonywalnego tego projektu.
-add_executable (RPN "RPN.cpp" "RPN.h")
+if (MSVC)
+    add_compile_options(/utf-8)
+endif()
+add_executable (RPN "RPN.cpp" "RPN.hpp" "operator.cpp" "token.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET RPN PROPERTY CXX_STANDARD 20)
