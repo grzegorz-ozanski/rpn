@@ -1,14 +1,15 @@
 ﻿#include <cmath>
 #include <stdexcept>
 #include "operator.hpp"
+#include "vecutils.hpp"
 
 Operator::Operator(const Token& token) : token(token) {
-    auto it = op_map.find(token.get_token());
+	auto it = vecutils::find_in_vector(op_map, token.get_token());
     if (it == op_map.end()) {
         throw std::runtime_error("Unknown operator: " + token);
     }
-    opcode = std::get<0>(it->second);
-    operands = std::get<2>(it->second);
+    opcode = std::get<1>(*it);
+    operands = std::get<3>(*it);
 }
 
 

@@ -1,8 +1,17 @@
+#include <optional>
+
 #include "token.hpp"
 #include "command.hpp"
+#include "constant.hpp"
+#include "operator.hpp"
+#include "vecutils.hpp"
 
 bool Token::is_constant(const std::string& token) {
-    return const_map.find(token) != const_map.end();
+    return vecutils::is_in_vector(const_map, token);
+}
+
+bool Token::is_operator() const {
+	return vecutils::is_in_vector(op_map, token);
 }
 
 bool Token::is_constant() const {
@@ -23,12 +32,25 @@ bool Token::is_number() const {
 }
 
 double Token::to_number() const {
-    if (is_constant(token)) {
-        return std::get<0>(const_map.at(token));
+    auto find_constant_value = [](const std::string& name) -> std::optional<double> {
+        for (const auto& entry : const_map) {
+            if (std::get<0>(entry) == name)
+                return std::get<1>(entry);
+        }
+        return std::nullopt;
+        };
+
+    if (auto val = find_constant_value(token)) {
+        return *val;
     }
-    if (token[0] == '-' && is_constant(token.substr(1))) {
-        return -std::get<0>(const_map.at(token.substr(1)));
+
+    if (token[0] == '-') {
+        std::string inner = token.substr(1);
+        if (auto val = find_constant_value(inner)) {
+            return -(*val);
+        }
     }
+
     return std::stod(token);
 }
 

@@ -1,12 +1,24 @@
 #pragma once
 
-#include <algorithm>
 #include <istream>
 #include <string>
-#include "constant.hpp"
+
 class Token {
+public:
+    enum Type {
+        NUMBER,       // Numeric value
+        COMMAND,      // Command (e.g., "add", "sub", etc.)
+		OPERATOR,     // Operator (e.g., "+", "-", "*", "/")
+        UNKNOWN       // Unknown token type
+	};
+
+private:
     std::string token;
     static bool is_constant(const std::string& token);
+    bool is_constant() const;
+    bool is_number() const;
+    bool is_command() const;
+    bool is_operator() const;
 public:
     Token() = default;
     Token(const std::string& token) : token(token) {}
@@ -15,10 +27,14 @@ public:
     }
     const std::string& get_token() const { return token; }
     operator std::string() const { return token; }
-    bool is_constant() const;
-    bool is_number() const;
-	bool is_command() const;
     double to_number() const;
+    operator double() const { return to_number(); }
+    Type type() const {
+        if (is_operator()) return OPERATOR;
+        if (is_number()) return NUMBER;
+        if (is_command()) return COMMAND;
+        return UNKNOWN;
+	}
 };
 
 inline std::string operator+(const char* lhs, const Token& rhs) {

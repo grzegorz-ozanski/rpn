@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-#include <map>
 #include <numbers>
 #include <string>
 #include <tuple>
+#include <vector>
 
-const std::map<std::string, std::tuple<double, std::string>> const_map = {
-    {"pi", std::make_tuple(std::numbers::pi, "π")},
-    {"e",  std::make_tuple(std::numbers::e, "e (Euler's constant)") }
+const std::vector<std::tuple<std::string, double, std::string>> const_map = {
+    {"pi", std::numbers::pi, "π" },
+    {"e",  std::numbers::e, "e (Euler's constant)" }
 };

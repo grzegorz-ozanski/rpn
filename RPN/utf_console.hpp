@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma once
+
 #if defined(_WIN32)
 #include <windows.h>
 void set_utf8_console() {

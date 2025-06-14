@@ -1,52 +1,52 @@
-﻿#include "command.hpp"
-#include "RPN.hpp"
-#include "operator.hpp"
-#include "token.hpp"
-#include "utf_console.hpp"
+﻿#include <optional>
+#include <sstream>
+#include "rpn.hpp"
 
 
-int main() {
-    set_utf8_console();
-    std::string line;
-    std::cout << "RPN Calculator.\n";
-	Command::help(false); // Print help without status message
-    std::cout << "\nEnter expression or '" << Command::find_name(CMD_EXIT) << "':\n";
-
-    while (true) {
-        bool should_continue = true; // Flag to control loop continuation
-        std::cout << "> ";
-        if (!std::getline(std::cin, line)) break;
-
+namespace rpn {
+    bool run(std::istream& in, std::ostream& out, std::ostream& err)
+    {
+        std::string line;
+        out << prompt;
+        if (!std::getline(in, line)) return false;
         std::stack<double> stack;
         std::istringstream iss(line);
-        std::string token;
+        std::optional<Command> command;
 
         try {
-			bool command_executed = false; // Reset help flag for each new line
+            if (line.find_first_not_of(" \t\n\r") == std::string::npos) {
+                throw std::runtime_error("No input provided");
+            }
             Token token;
-            while (iss >> token) {
-                if (token.is_command()) {
-                    should_continue = Command(token).execute();
-					command_executed = true; // Set help flag to true
+            while (!command.has_value() && iss >> token) {
+                switch (token.type()) {
+                case Token::COMMAND:
+                    command.emplace(token);
                     continue;
-				}
-                if (token.is_number()) {
-                    stack.push(token.to_number());
-                }
-                else {
+                case Token::NUMBER:
+                    stack.push(token);
+                    break; // Valid number, proceed
+                case Token::OPERATOR:
                     stack.push(Operator(token)(stack));
+                    break; // Valid operator, proceed
+                default:
+                    throw std::runtime_error("Invalid token");
                 }
             }
 
-			if (!should_continue) break; // Exit or help command was executed
-			if (command_executed) continue; // Skip result output if help was requested
+            if (command.has_value()) {
+                if (!command->execute(out)) {
+                    out << "Exiting calculator.\n";
+                    return false;
+                }
+                return true; // Continue running
+            }
             if (stack.size() != 1) throw std::runtime_error("Invalid expression");
-            std::cout << "Result: " << stack.top() << "\n";
+            out << "Result: " << stack.top() << "\n";
         }
         catch (const std::exception& e) {
-            std::cerr << "Error: " << e.what() << "\n";
+            err << "Error: " << e.what() << "\n";
         }
+        return true; // Continue running
     }
-
-    return 0;
 }

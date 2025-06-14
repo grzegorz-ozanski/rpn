@@ -6,10 +6,10 @@
 if (MSVC)
     add_compile_options(/utf-8)
 endif()
-add_executable (RPN "RPN.cpp" "RPN.hpp" "operator.cpp" "token.cpp")
+add_library (rpnlib  "command.cpp" "operator.cpp" "rpn.cpp" "token.cpp" )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET RPN PROPERTY CXX_STANDARD 20)
+  set_property(TARGET rpnlib PROPERTY CXX_STANDARD 20)
 endif()
 
-# TODO: Dodaj testy i zainstaluj elementy docelowe w razie potrzeby.
+target_include_directories(rpnlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
