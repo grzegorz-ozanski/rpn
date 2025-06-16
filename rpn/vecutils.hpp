@@ -1,6 +1,11 @@
 #include <algorithm>
 
 namespace vecutils {
+    template<typename T>
+    auto get_key(const T& x) {
+        return std::get<0>(x);
+    }
+
     template <typename Container, typename T>
     Container::const_iterator find_in_vector(const Container& vec, const T& key) {
         return std::find_if(vec.begin(), vec.end(), [&](const auto& entry) {
