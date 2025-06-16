@@ -2,14 +2,19 @@
 
 namespace vecutils {
     template<typename T>
-    auto get_key(const T& x) {
-        return std::get<0>(x);
+    auto get_key(const T& x) -> decltype(x.name) {
+        return x.name;
+    }
+
+    template<typename T>
+    auto get_info(const T& x) -> decltype(x.getInfo()) {
+        return x.getInfo();
     }
 
     template <typename Container, typename T>
     Container::const_iterator find_in_vector(const Container& vec, const T& key) {
         return std::find_if(vec.begin(), vec.end(), [&](const auto& entry) {
-            return std::get<0>(entry) == key;
+            return get_key(entry) == key;
             });
     }
 
@@ -18,11 +23,11 @@ namespace vecutils {
         return find_in_vector(vec, key) != vec.end();
     }
 
-    template <typename Container, size_t Index=0>
+    template <typename Container>
     size_t max_len(const Container& items) {
         size_t max_len = 0;
         for (const auto& entry : items) {
-            max_len = std::max(max_len, std::get<Index>(entry).size());
+            max_len = std::max(max_len, get_key(entry).size());
         }
         return max_len;
     }

@@ -7,11 +7,11 @@
 #include "vecutils.hpp"
 
 bool Token::is_constant(const std::string& token) {
-    return vecutils::is_in_vector(const_map, token);
+    return vecutils::is_in_vector(g_constants, token);
 }
 
 bool Token::is_operator() const {
-	return vecutils::is_in_vector(op_map, token);
+	return vecutils::is_in_vector(g_operators, token);
 }
 
 bool Token::is_constant() const {
@@ -33,9 +33,9 @@ bool Token::is_number() const {
 
 double Token::to_number() const {
     auto find_constant_value = [](const std::string& name) -> std::optional<double> {
-        for (const auto& entry : const_map) {
-            if (std::get<0>(entry) == name)
-                return std::get<1>(entry);
+        for (const auto& entry : g_constants) {
+            if (entry.name == name)
+                return entry.value;
         }
         return std::nullopt;
         };

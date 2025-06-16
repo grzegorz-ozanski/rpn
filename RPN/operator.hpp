@@ -5,6 +5,7 @@
 #include <tuple>
 #include <vector>
 #include "token.hpp"
+#include "info.hpp"
 
 enum OpCode {
     OP_ADD = 0,
@@ -19,7 +20,22 @@ enum OpCode {
     OP_LOGB
 };
 
-const std::vector<std::tuple<std::string, OpCode, std::string, int>> op_map = {
+class OperatorInfo : public BaseInfo {
+public:
+    OpCode code;
+    int operands;
+    OperatorInfo(const std::string& name, OpCode code, const std::string& info, int operands)
+        : BaseInfo(name, info), code(code), operands(operands) {
+    }
+
+    virtual std::string getInfo() const {
+        return info + " (requires " + std::to_string(operands) +
+            " operand" + (operands > 1 ? "s" : "") + ")";
+    }
+
+};
+
+inline const std::vector<OperatorInfo> g_operators = {
     {"+", OP_ADD, "addition", 2},
     {"-", OP_SUBTRACT, "subtraction", 2},
     {"*", OP_MULTIPLY, "multiplication", 2},

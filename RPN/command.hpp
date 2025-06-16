@@ -4,6 +4,7 @@
 #include <tuple>
 #include <vector>
 #include "token.hpp"
+#include "info.hpp"
 
 class Command {
 public:
@@ -30,7 +31,16 @@ public:
 	}
 };
 
-const std::vector<std::tuple<std::string, Command::CmdCode, std::string>> cmd_map = {
+class CommandInfo : public BaseInfo {
+public:
+    Command::CmdCode code;
+
+    CommandInfo(const std::string& name, Command::CmdCode code, const std::string& info)
+        : BaseInfo(name, info), code(code) {
+    }
+};
+
+inline const std::vector<CommandInfo> g_commands = {
     {":help", Command::CMD_HELP, "print help message"},
     {":exit", Command::CMD_EXIT, "exit"},
 };
