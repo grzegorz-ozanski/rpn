@@ -17,13 +17,13 @@ private:
     const Token& token;
     CmdCode cmdcode; // Operator symbol
 
+    static std::string find_name(const CmdCode& code);
+
 public:
     Command(const Token& token);
 
-    static void help(std::ostream& out, bool printStatusMessage = true);
+    static void help(std::ostream& out);
     
-    static std::string find_name(const CmdCode& code);
-
     bool execute(std::ostream& out) const;
     bool operator()(std::ostream& out) const {
 		return execute(out);

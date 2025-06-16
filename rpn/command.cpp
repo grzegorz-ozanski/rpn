@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <iostream>
 #include "command.hpp"
 #include "operator.hpp"
@@ -15,21 +16,23 @@ Command::Command(const Token& token) : token(token) {
     }
 }
 
-void Command::help(std::ostream& out, bool printStatusMessage) {
+void Command::help(std::ostream& out) {
+    int padding = static_cast<int>(vecutils::max_len(op_map)) + 2;
     out << "\nAvailable operators:\n";
     for (const auto& [op, code, info, operands] : op_map) {
-        out << op << ": " << info << " (requires " << operands << " operand" << (operands > 1 ? "s" : "") << ")\n";
+        out << std::left << std::setw(padding) << (op + ": ") << info << " (requires " << operands << " operand" << (operands > 1 ? "s" : "") << ")\n";
     }
+    padding = static_cast<int>(vecutils::max_len(const_map)) + 2;
     out << "\nAvailable constants:\n";
     for (const auto& [name, value, info] : const_map) {
-        out << name << ": " << info << " (value: " << value << ")\n";
+        out << std::left << std::setw(padding) << (name + ": ") << info << " (value: " << value << ")\n";
     }
+    padding = static_cast<int>(vecutils::max_len(cmd_map)) + 2;
     out << "\nAvailable commands:\n";
     for (const auto& [name, code, info] : cmd_map) {
-        out << name << ": " << info << "\n";
+        out << std::left << std::setw(padding) << (name + ": ") << info << "\n";
     }
-    if (printStatusMessage)
-        out << "Enter '" << find_name(CMD_EXIT) << "' to quit.\n";
+    out << "\nEnter expression or '" << Command::find_name(Command::CMD_EXIT) << "' to quit.\n";
 }
 
 std::string Command::find_name(const CmdCode& cmdcode) {

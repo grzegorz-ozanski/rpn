@@ -1,3 +1,6 @@
+if (MSVC)
+    add_compile_options(/utf-8)
+endif()
 include(FetchContent)
 
 FetchContent_Declare(

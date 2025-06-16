@@ -12,4 +12,13 @@ namespace vecutils {
     bool is_in_vector(const TupleVector& vec, const T& key) {
         return find_in_vector(vec, key) != vec.end();
     }
+
+    template <typename Container, size_t Index=0>
+    size_t max_len(const Container& items) {
+        size_t max_len = 0;
+        for (const auto& entry : items) {
+            max_len = std::max(max_len, std::get<Index>(entry).size());
+        }
+        return max_len;
+    }
 }

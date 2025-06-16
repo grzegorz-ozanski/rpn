@@ -1,4 +1,4 @@
-// tests/test_rpn.cpp
+﻿// tests/test_rpn.cpp
 #include <catch2/catch_test_macros.hpp>
 #include <sstream>
 #include <string>
@@ -7,13 +7,15 @@
 #include <stack>
 #include "rpn.hpp"
 
-bool run_test(const std::string& input, const std::string& output) {
+bool run_test(const std::string& input, const std::string& output, const bool result=true) {
     std::stringstream in(input + "\n");
     std::stringstream out;
     std::stringstream err;
 
-    rpn::run(in, out, err);
-    return (output.find("Error") != std::string::npos ? "" : rpn::prompt) + output + "\n" == (err.str().empty() ? out.str() : err.str());
+    bool run_result = rpn::run(in, out, err);
+    return 
+        ((output.find("Error") != std::string::npos ? "" : rpn::prompt) + output + "\n" == (err.str().empty() ? out.str() : err.str())) &&
+        run_result == result;
 }
 
 TEST_CASE("Tests.Simple.SimpleArithmetic") {
@@ -40,4 +42,32 @@ TEST_CASE("Tests.Simple.Constants") {
     REQUIRE(run_test("pi", "Result: 3.14159"));
     REQUIRE(run_test("-pi", "Result: -3.14159"));
     REQUIRE(run_test("e", "Result: 2.71828"));
+}
+
+TEST_CASE("Tests.Simple.Commands") {
+    REQUIRE(run_test(":quit", "Error: Unknown command: :quit"));
+    REQUIRE(run_test(":help", R"EOF(
+Available operators:
++:    addition (requires 2 operands)
+-:    subtraction (requires 2 operands)
+*:    multiplication (requires 2 operands)
+/:    division (requires 2 operands)
+^:    power (requires 2 operands)
+**:   power (alias) (requires 2 operands)
+neg:  negation (requires 1 operand)
+abs:  absolute value (requires 1 operand)
+log:  base 10 logarithm (requires 1 operand)
+ln:   natural logarithm (requires 1 operand)
+logn: logarithm with base n (requires 2 operands)
+
+Available constants:
+pi: π (value: 3.14159)
+e:  e (Euler's constant) (value: 2.71828)
+
+Available commands:
+:help: print help message
+:exit: exit
+
+Enter expression or ':exit' to quit.)EOF"));
+    REQUIRE(run_test(":exit", "Exiting calculator.", false));
 }
