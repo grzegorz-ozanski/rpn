@@ -5,7 +5,7 @@ int main() {
     set_utf8_console();
 
     std::cout << "RPN Calculator.\n";
-    Command::help(std::cout);
+    rpn::Command::help(std::cout);
 
     while (rpn::run(std::cin, std::cout, std::cerr));
     return 0;

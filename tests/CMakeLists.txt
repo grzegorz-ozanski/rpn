@@ -10,10 +10,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
-add_executable(rpn_tests
-  test_main.cpp
-  test_rpn.cpp
-)
+add_executable(rpn_tests test_rpn.cpp)
 
 target_link_libraries(rpn_tests PRIVATE Catch2::Catch2WithMain rpnlib)
 target_include_directories(rpn_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../rpn)
