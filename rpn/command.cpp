@@ -20,8 +20,8 @@ void print_aligned(std::ostream& out, const std::string& header, const Container
 }
 
 Command::Command(const Token& token) : token(token) {
-    auto it = vecutils::find_in_vector(g_commands, token.get_token());
-    if (it != g_commands.end()) {
+    auto it = ReqisteredCommands::find(token);
+    if (it) {
         cmdcode = it->code;
     }
     else {
@@ -29,14 +29,14 @@ Command::Command(const Token& token) : token(token) {
     }
 }
 void Command::help(std::ostream& out) {
-    print_aligned(out, "operators", g_operators);
-    print_aligned(out, "constants", g_constants);
-    print_aligned(out, "commands", g_commands);
+    print_aligned(out, "operators", ReqisteredOperators::all);
+    print_aligned(out, "constants", ReqisteredConstants::all);
+    print_aligned(out, "commands", ReqisteredCommands::all);
     out << "\nEnter expression or '" << Command::find_name(Command::CMD_EXIT) << "' to quit.\n";
 }
 
 std::string Command::find_name(const CmdCode& cmdcode) {
-    for (const auto& item: g_commands) {
+    for (const auto& item: ReqisteredCommands::all) {
         if (item.code == cmdcode)
             return item.name;
     }

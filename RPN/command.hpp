@@ -5,6 +5,7 @@
 #include <vector>
 #include "token.hpp"
 #include "info.hpp"
+#include "vecutils.hpp"
 
 class Command {
 public:
@@ -40,8 +41,15 @@ public:
     }
 };
 
-inline const std::vector<CommandInfo> g_commands = {
-    {":help", Command::CMD_HELP, "print help message"},
-    {":exit", Command::CMD_EXIT, "exit"},
-};
+class ReqisteredCommands {
+public:
+    inline static const std::vector<CommandInfo> all = {
+        {":help", Command::CMD_HELP, "print help message"},
+        {":exit", Command::CMD_EXIT, "exit"},
+    };
 
+    static const CommandInfo* find(const Token& token) {
+        auto it = vecutils::find_in_vector(all, token.get_token());
+        return it != all.end() ? &(*it) : nullptr;
+    }
+};

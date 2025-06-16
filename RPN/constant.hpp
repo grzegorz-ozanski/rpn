@@ -6,6 +6,7 @@
 #include <tuple>
 #include <vector>
 #include "info.hpp"
+#include "vecutils.hpp"
 
 class ConstantInfo : public BaseInfo {
 public:
@@ -21,7 +22,14 @@ public:
 
 };
 
-inline const std::vector<ConstantInfo> g_constants = {
-    {"pi", std::numbers::pi, "π" },
-    {"e",  std::numbers::e, "e (Euler's constant)" }
+class ReqisteredConstants {
+public:
+    inline static const std::vector<ConstantInfo> all = {
+        {"pi", std::numbers::pi, "π" },
+        {"e",  std::numbers::e, "e (Euler's constant)" }
+    };
+    static bool contains(const Token& token) {
+        return vecutils::is_in_vector(all, token.get_token());
+    }
 };
+

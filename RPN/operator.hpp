@@ -1,11 +1,13 @@
 ﻿#pragma once
 
+#include <optional>
 #include <stack>
 #include <string>
 #include <tuple>
 #include <vector>
 #include "token.hpp"
 #include "info.hpp"
+#include "vecutils.hpp"
 
 enum OpCode {
     OP_ADD = 0,
@@ -35,18 +37,28 @@ public:
 
 };
 
-inline const std::vector<OperatorInfo> g_operators = {
-    {"+", OP_ADD, "addition", 2},
-    {"-", OP_SUBTRACT, "subtraction", 2},
-    {"*", OP_MULTIPLY, "multiplication", 2},
-    {"/", OP_DIVIDE, "division", 2},
-    {"^", OP_POWER, "power", 2},
-    {"**",OP_POWER, "power (alias)", 2},
-    {"neg", OP_NEGATE, "negation", 1},
-    {"abs", OP_ABS, "absolute value", 1},
-    {"log", OP_LOG10,  "base 10 logarithm", 1},
-    {"ln",  OP_LN, "natural logarithm", 1},
-    {"logn",OP_LOGB, "logarithm with base n", 2}
+class ReqisteredOperators {
+public:
+    inline static const std::vector<OperatorInfo> all = {
+        {"+", OP_ADD, "addition", 2},
+        {"-", OP_SUBTRACT, "subtraction", 2},
+        {"*", OP_MULTIPLY, "multiplication", 2},
+        {"/", OP_DIVIDE, "division", 2},
+        {"^", OP_POWER, "power", 2},
+        {"**", OP_POWER, "power (alias)", 2},
+        {"neg", OP_NEGATE, "negation", 1},
+        {"abs", OP_ABS, "absolute value", 1},
+        {"log", OP_LOG10, "base 10 logarithm", 1},
+        {"ln", OP_LN, "natural logarithm", 1},
+        {"logn", OP_LOGB, "logarithm with base n", 2}
+    };
+    static bool contains(const Token& token) {
+		return vecutils::is_in_vector(all, token.get_token());
+	}
+    static const OperatorInfo* find(const Token& token) {
+        auto it = vecutils::find_in_vector(all, token.get_token());
+        return it != all.end() ? &(*it) : nullptr;
+	}
 };
 
 class Operator {

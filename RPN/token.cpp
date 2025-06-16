@@ -4,14 +4,13 @@
 #include "command.hpp"
 #include "constant.hpp"
 #include "operator.hpp"
-#include "vecutils.hpp"
 
 bool Token::is_constant(const std::string& token) {
-    return vecutils::is_in_vector(g_constants, token);
+    return ReqisteredConstants::contains(token);
 }
 
 bool Token::is_operator() const {
-	return vecutils::is_in_vector(g_operators, token);
+	return ReqisteredOperators::contains(token);
 }
 
 bool Token::is_constant() const {
@@ -33,7 +32,7 @@ bool Token::is_number() const {
 
 double Token::to_number() const {
     auto find_constant_value = [](const std::string& name) -> std::optional<double> {
-        for (const auto& entry : g_constants) {
+        for (const auto& entry : ReqisteredConstants::all) {
             if (entry.name == name)
                 return entry.value;
         }
