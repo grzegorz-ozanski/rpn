@@ -1,10 +1,24 @@
+#include <format>
 #include <iomanip>
 #include <iostream>
 #include "command.hpp"
 #include "operator.hpp"
 #include "constant.hpp"
 #include "vecutils.hpp"
+template <typename Container, typename KeyFunc, typename InfoFunc>
+void print_aligned(std::ostream& out, const std::string& header, const Container& items, KeyFunc get_key, InfoFunc get_info) {
+    size_t max_len = 0;
+    for (const auto& item : items)
+        max_len = std::max(max_len, get_key(item).size());
 
+    int padding = static_cast<int>(max_len) + 2;
+
+	out << "\nAvailable " << header << ":\n";
+    for (const auto& item : items) {
+        out << std::left << std::setw(padding)
+            << (get_key(item) + ": ") << get_info(item) << "\n";
+    }
+}
 
 Command::Command(const Token& token) : token(token) {
 	auto it = vecutils::find_in_vector(cmd_map, token.get_token());
@@ -15,23 +29,35 @@ Command::Command(const Token& token) : token(token) {
         throw std::runtime_error("Unknown command: " + token.get_token());
     }
 }
-
 void Command::help(std::ostream& out) {
-    int padding = static_cast<int>(vecutils::max_len(op_map)) + 2;
-    out << "\nAvailable operators:\n";
-    for (const auto& [op, code, info, operands] : op_map) {
-        out << std::left << std::setw(padding) << (op + ": ") << info << " (requires " << operands << " operand" << (operands > 1 ? "s" : "") << ")\n";
-    }
-    padding = static_cast<int>(vecutils::max_len(const_map)) + 2;
-    out << "\nAvailable constants:\n";
-    for (const auto& [name, value, info] : const_map) {
-        out << std::left << std::setw(padding) << (name + ": ") << info << " (value: " << value << ")\n";
-    }
-    padding = static_cast<int>(vecutils::max_len(cmd_map)) + 2;
-    out << "\nAvailable commands:\n";
-    for (const auto& [name, code, info] : cmd_map) {
-        out << std::left << std::setw(padding) << (name + ": ") << info << "\n";
-    }
+    print_aligned(out, "operators", op_map,
+        [](const auto& item) { 
+            const auto& [name, code, info, operands] = item;
+            return name; 
+        },
+        [](const auto& item) {
+            const auto& [name, code, info, operands] = item;
+            return info + " (requires " + std::to_string(operands) +
+                " operand" + (operands > 1 ? "s" : "") + ")";
+        });
+    print_aligned(out, "constants", const_map,
+        [](const auto& item) {
+            const auto& [name, value, info] = item;
+            return name;
+        },
+        [](const auto& item) {
+            const auto& [name, value, info] = item;
+            return info + " (value: " + std::format("{:.5f}", value) + ")";
+        });
+    print_aligned(out, "commands", cmd_map,
+        [](const auto& item) {
+            const auto& [name, code, info] = item;
+            return name;
+        },
+        [](const auto& item) {
+            const auto& [name, code, info] = item;
+            return info;
+        });
     out << "\nEnter expression or '" << Command::find_name(Command::CMD_EXIT) << "' to quit.\n";
 }
 
