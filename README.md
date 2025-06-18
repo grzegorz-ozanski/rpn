@@ -1,17 +1,23 @@
-# RPN Calculator (C++)
+﻿# RPN Calculator (C++)
+
+![CI](https://github.com/grzegorz-ozanski/rpn/actions/workflows/cmake-multi-platform.yml/badge.svg)
 
 A simple Reverse Polish Notation (RPN) calculator written in modern C++.
 
-## Features
+## ✨ Features
 
 - Basic arithmetic: `+`, `-`, `*`, `/`, 'neg' (negation), 'abs' (absolute value)
 - Complex operators '^', '**' (power), 'ln' (natural logarithm), 'log' (base 10 logarithm), 'logn' (logarithm base n)
 - Error handling (invalid input, division by zero)
 - Interactive REPL loop
 
-## Build
+## 🖥️ Requirements
+- C++20 compatible compiler (e.g., GCC, Clang, MSVC); C++17 compatible version is on the way! ;)
+- [CMake](https://cmake.org/) 3.16 or higher
 
-This project uses [CMake](https://cmake.org/) as a build system. To build the project, follow these steps:
+## 📦 Build
+
+To build the project, follow these steps:
 
 ```bash
 # 1. Create a build directory
@@ -43,5 +49,42 @@ Result: 23
 > 4 0 /
 Error: Division by zero
 ```
-
 Type `exit` to quit.
+
+
+## 🔍 Project Structure
+```
+RPN/
+├── rpnlib/               # Core RPN library source code
+│   ├── CMakeLists.txt
+│   ├── CMakeSettings.json
+│   ├── command.cpp       # Command handling implementation
+│   ├── command.hpp       # Command handling interface
+│   ├── constant.hpp      # Constants used in calculations
+│   ├── entry.hpp         # Base classes for entries (i.e command, operator and constant) infos and registries (collections of all valid entries) 
+│   ├── operator.cpp      # Operator handling implementation
+│   ├── operator.hpp	  # Operator handling interface
+│   ├── rpn.cpp 		  # Main REPL loop
+│   ├── rpn.hpp			  # RPN library interface
+│   ├── token.cpp         # Token parsing and handling implementation
+│   ├── token.hpp		  # Token parsing and handling interface
+│   └── utf_console.hpp   # UTF-8 console output handling (Windows-specific)
+├── tests/                # Unit tests (see repo for contents)
+├── main.cpp              # Main CLI application entry point
+├── CMakeLists.txt        # Project build configuration
+├── LICENSE.txt           # Poject license
+└── README.md             # This file
+```
+## 🚧 Planned Improvements
+* Compatibility with older C++ standards, like C++17
+* Add unit tests and test coverage to CI
+* Add more complex operators like `sqrt`, `sin`, `cos`, `tan`, etc.
+
+## 🙋 Author
+
+Created by **Grzegorz Ożański**  
+with a bit of ChatGPT support for formatting and polish ;)
+
+## 📄 License
+
+MIT License
