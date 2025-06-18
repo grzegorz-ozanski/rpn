@@ -11,8 +11,18 @@ A simple Reverse Polish Notation (RPN) calculator written in modern C++.
 
 ## Build
 
+This project uses [CMake](https://cmake.org/) as a build system. To build the project, follow these steps:
+
 ```bash
-g++ -std=c++17 -o rpn rpn.cpp
+# 1. Create a build directory
+mkdir build
+cd build
+
+# 2. Generate build files using CMake
+cmake ..
+
+# 3. Build the project
+cmake --build .
 ```
 
 ## Usage
