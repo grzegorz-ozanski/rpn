@@ -16,9 +16,9 @@ project ("RPN")
 enable_testing()
 
 # Uwzględnij podprojekty.
-add_executable(RPN main.cpp)
-target_link_libraries(RPN PRIVATE rpnlib)
-add_subdirectory ("rpn")
+add_executable(rpn main.cpp)
+target_link_libraries(rpn PRIVATE rpnlib)
+add_subdirectory ("rpnlib")
 
 enable_testing()
 add_subdirectory(tests)
