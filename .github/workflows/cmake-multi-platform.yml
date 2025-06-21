@@ -49,17 +49,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Enable coverage for Windows Debug builds
+      if: matrix.os == 'windows-latest' && matrix.build_type == 'Debug'
+      shell: pwsh
+      run: echo "RUN_COVERAGE=TRUE" >> $env:GITHUB_ENV
+
     - name: Show available installers
       if: env.RUN_COVERAGE == 'TRUE'
       shell: cmd
       run: |
         where winget
         where choco
-
-    - name: Enable coverage for Windows Debug builds
-      if: matrix.os == 'windows-latest' && matrix.build_type == 'Debug'
-      shell: pwsh
-      run: echo "RUN_COVERAGE=TRUE" >> $env:GITHUB_ENV
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
