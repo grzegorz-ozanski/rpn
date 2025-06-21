@@ -7,6 +7,9 @@ on:
     branches: [ "master" ]
   workflow_dispatch:
 
+env:
+    RUN_COVERAGE: FALSE
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -23,7 +26,7 @@ jobs:
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
         os: [ubuntu-latest, windows-latest]
-        build_type: [Release]
+        build_type: [Debug, Release]
         c_compiler: [gcc, clang, cl]
         include:
           - os: windows-latest
@@ -45,6 +48,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Enable coverage for Windows Debug builds
+      if: matrix.os == 'windows-latest' && matrix.build_type == 'Debug'
+      shell: pwsh
+      run: echo "RUN_COVERAGE=TRUE" >> $env:GITHUB_ENV
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -72,3 +80,55 @@ jobs:
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest --build-config ${{ matrix.build_type }}
+
+    - name: Install OpenCppCoverage for coverage run
+      if: env.RUN_COVERAGE == 'TRUE'
+      run: |
+        winget install --id OpenCppCoverage.OpenCppCoverage -e --accept-source-agreements --accept-package-agreements
+
+    # Generate and present coverage report`
+    - name: Run coverage tests
+      if: env.RUN_COVERAGE == 'TRUE'
+      run: |
+        OpenCppCoverage.exe --sources "${env:GITHUB_WORKSPACE}\rpnlib" --export_type cobertura:coverage.xml -- "${{ steps.strings.outputs.build-output-dir }}\${{ matrix.build_type }}\tests\rpn_tests.exe"
+    
+    # Install ReportGenerator
+    - name: Install ReportGenerator CLI  for coverage run
+      if: env.RUN_COVERAGE == 'TRUE'
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.8
+    
+    # Generate and present coverage report`
+    - name: Coverage Report for coverage run
+      if: env.RUN_COVERAGE == 'TRUE'
+      run: |
+        reportgenerator -reports:coverage.xml -targetdir:coveragereport -reporttypes:Html,TextSummary,Badges
+        cat .\coveragereport\Summary.txt
+
+    # Update passrate badge
+    - name: Update passrate badge in README.md for coverage run (temp. disabled)
+      if: env.RUN_COVERAGE == 'TRUE1'
+      run: |
+        $badgePattern = '\[!\[Unit tests\]\(https://img\.shields\.io/badge/Unit%20tests-Passed%3A[0-9]+%20Failed%3A[0-9]+-[a-z]+\)\]\(https://github\.com/grzegorz-ozanski/ntp-service/actions/runs/[0-9]+\)'
+        $badge = .\.github\scripts\badge-url.ps1 $env:Test_Results_Path\$env:Test_Results_File
+        $newBadge = "[![Unit tests]($badge)](https://github.com/grzegorz-ozanski/ntp-service/actions/runs/${{ github.run_id }})"
+
+        (Get-Content ${env:Readme_Path}) -replace $badgePattern, $newBadge | Set-Content ${env:Readme_Path}
+
+    - name: Commit updated README for coverage run (temp. disabled)
+      if: env.RUN_COVERAGE == 'TRUE1'
+      run: |
+        pwsh -File ${env:Git_Push_Script} `
+        ${env:Readme_Path} `
+        "Update passrate badge [skip ci]" `
+        ${env:Gh_Actions_User_Name} `
+        ${env:Gh_Actions_Email}
+
+    - name: Deploy coverage badge to GitHub Pages for coverage run
+      if: env.RUN_COVERAGE == 'TRUE'
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./coveragereport
+        destination_dir: coverage
+        publish_branch: gh-pages
+        force_orphan: true
