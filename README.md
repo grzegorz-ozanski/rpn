@@ -31,8 +31,13 @@ cmake ..
 cmake --build .
 ```
 
-## Usage
+## 🚀 Usage
 
+1. Navigate to the build directory where the executable is located.
+```
+cd build
+```
+2. Run the RPN calculator executable:
 ```bash
 ./rpn
 ```
@@ -51,6 +56,15 @@ Error: Division by zero
 ```
 Type `exit` to quit.
 
+## 🧪 Testing
+1. Navigate to the build directory where tests executable is located.
+```
+cd build/tests
+```
+2. Run the RPN calculator executable:
+```bash
+./rpn_tests_
+```
 
 ## 🔍 Project Structure
 ```
