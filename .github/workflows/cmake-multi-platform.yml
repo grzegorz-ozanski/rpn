@@ -81,13 +81,22 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest --build-config ${{ matrix.build_type }}
 
+    
+    - name: Show available installers
+      if: env.RUN_COVERAGE == 'TRUE'
+      shell: cmd
+      run: |
+        where winget
+        where chocolatey
+
     - name: Download and install OpenCppCoverage for coverage run
       if: env.RUN_COVERAGE == 'TRUE' && steps.cache-opencppcoverage.outputs.cache-hit != 'true'
       run: |
         curl -LO https://github.com/OpenCppCoverage/OpenCppCoverage/releases/download/release-0.9.9.0/OpenCppCoverageSetup-x64-0.9.9.0.exe
-        ./OpenCppCoverageSetup-x64-0.9.9.0.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-
+        ./OpenCppCoverageSetup-x64-0.9.9.0.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP- /LOG="Install.log"
+        cat Install.log
 
-    # Generate and present coverage report`
+    # Generate and present coverage report
     - name: Run coverage tests
       if: env.RUN_COVERAGE == 'TRUE'
       run: |
