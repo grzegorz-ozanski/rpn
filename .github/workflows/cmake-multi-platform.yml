@@ -95,7 +95,7 @@ jobs:
     - name: Run coverage tests
       if: env.RUN_COVERAGE == 'TRUE'
       run: |
-        OpenCppCoverage.exe --sources "${env:GITHUB_WORKSPACE}\rpnlib" --export_type cobertura:coverage.xml -- "${{ steps.strings.outputs.build-output-dir }}\${{ matrix.build_type }}\tests\rpn_tests.exe"
+        & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" --sources "${env:GITHUB_WORKSPACE}\rpnlib" --export_type cobertura:coverage.xml -- "${{ steps.strings.outputs.build-output-dir }}\${{ matrix.build_type }}\tests\rpn_tests.exe"
     
     # Install ReportGenerator
     - name: Install ReportGenerator CLI  for coverage run
