@@ -49,6 +49,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Show available installers
+      if: env.RUN_COVERAGE == 'TRUE'
+      shell: cmd
+      run: |
+        where winget
+        where choco
+
     - name: Enable coverage for Windows Debug builds
       if: matrix.os == 'windows-latest' && matrix.build_type == 'Debug'
       shell: pwsh
