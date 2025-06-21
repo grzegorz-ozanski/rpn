@@ -1,3 +1,4 @@
+# CMakeList.txt: configuration file for the rpnlib library unit tests
 if (MSVC)
     add_compile_options(/utf-8)
 endif()

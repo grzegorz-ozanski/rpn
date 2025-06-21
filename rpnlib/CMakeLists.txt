@@ -1,8 +1,6 @@
-﻿# CMakeList.txt: projekt CMake dla elementu RPN, dołącz źródło i zdefiniuj
-# tutaj logikę specyficzną dla projektu.
+﻿# CMakeList.txt: configuration file for the rpnlib library
 #
 
-# Dodaj źródło do pliku wykonywalnego tego projektu.
 if (MSVC)
     add_compile_options(/utf-8)
 endif()
