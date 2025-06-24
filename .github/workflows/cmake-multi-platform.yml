@@ -58,7 +58,9 @@ jobs:
     - name: Enable coverage run for Windows Debug builds only
       if: matrix.os == 'windows-latest' && matrix.build_type == 'Debug'
       shell: pwsh
-      run: echo "RUN_COVERAGE=TRUE" >> $env:GITHUB_ENV
+      run: |
+        echo "RUN_COVERAGE=TRUE" >> $env:GITHUB_ENV
+        echo "ADDITIONAL_CTEST_ARGS=""--output-log ${env:TEST_LOG_FILE}""" >> $env:GITHUB_ENV
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -85,7 +87,7 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --build-config ${{ matrix.build_type }} --output-log ${env:TEST_LOG_FILE}
+      run: ctest --build-config ${{ matrix.build_type }} ${env:ADDITIONAL_CTEST_ARGS}
     
     - name: Install OpenCppCoverage
       if: env.RUN_COVERAGE == 'TRUE'
