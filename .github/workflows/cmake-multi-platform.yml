@@ -94,6 +94,7 @@ jobs:
 
     - name: Check if test log file was created
       if: env.RUN_COVERAGE == 'TRUE'
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
       shell: pwsh
       run: |
         if (-not (Test-Path ${env:TEST_LOG_FILE})) {
