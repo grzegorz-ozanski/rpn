@@ -21,10 +21,12 @@ namespace rpn {
     bool Token::is_number() const {
         if (token.empty()) return false;
         if (is_constant(token) || token[0] == '-' && is_constant(token.substr(1))) return true; // Check if it's a constant
-        if (token.size() > 1 && token[0] == '-' && std::isdigit(token[1])) {
-            return std::all_of(token.begin() + 1, token.end(), ::isdigit);
+        std::size_t pos = 0;
+        try {
+            auto unused_value = std::stod(token, &pos);
         }
-        return std::all_of(token.begin(), token.end(), ::isdigit);
+        catch (...) { }
+        return pos == token.size(); // Must be processed completely
     }
 
     double Token::to_number() const {
