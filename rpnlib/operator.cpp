@@ -51,7 +51,7 @@ namespace rpn {
         case OP_LN:
             if (a <= 0) throw std::runtime_error("Logarithm domain error");
             return std::log(a);
-        case OP_LOGB:
+        case OP_LOGN:
             if (a <= 0 || b <= 0 || b == 1) throw std::runtime_error("Logarithm domain error");
             return std::log(a) / std::log(b);
         default: throw std::runtime_error("Unknown operator code");

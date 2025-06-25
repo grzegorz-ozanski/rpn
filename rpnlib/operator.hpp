@@ -17,7 +17,7 @@ namespace rpn {
         OP_ABS,
         OP_LOG10,
         OP_LN,
-        OP_LOGB
+        OP_LOGN
     };
 
     class Operator {
@@ -64,7 +64,7 @@ namespace rpn {
         {"abs", OP_ABS, "absolute value", 1},
         {"log", OP_LOG10, "base 10 logarithm", 1},
         {"ln", OP_LN, "natural logarithm", 1},
-        {"logn", OP_LOGB, "logarithm with base n", 2}
+        {"logn", OP_LOGN, "logarithm with base n", 2}
     };
 
     using ReqisteredOperators = EntryRegistry<OperatorInfo>;
