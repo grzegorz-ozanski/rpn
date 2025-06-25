@@ -59,14 +59,30 @@ Error: Division by zero
 Type `exit` to quit.
 
 ## 🧪 Testing
+
 1. Navigate to the build directory where tests executable is located.
 ```
 cd build/tests
 ```
-2. Run the RPN calculator executable:
+2. Run the tests executable:
 ```bash
-./rpn_tests_
+./rpn_tests
 ```
+
+### Coverage Tests:
+1 .Download and install OpenCppCoverage tool from [OpenCppCoverage](https://github.com/OpenCppCoverage/OpenCppCoverage)  
+2. Install the [ReportGenerator](https://reportgenerator.io) tool globally, so that it can be used for a C++ projects as well:
+```bash
+dotnet add package ReportGenerator --version 5.4.8
+```
+3. Build the project as described in the [Build](#-build) section above.  
+4. In the project directory, run the following command to generate coverage report:
+```bash
+OpenCppCoverage --sources "rpnlib" --export_type cobertura:coverage.xml -- "build\rpn_tests.exe"
+reportgenerator -reports:coverage.xml -targetdir:coverage-report -reporttypes:Html
+```
+
+Details about challanges related to generating coverage report in CI are covered in [Code Coverage in CI](code-coverage-readme.md) document.
 
 ## 🔍 Project Structure
 ```
@@ -80,10 +96,10 @@ RPN/
 │   ├── entry.hpp         # Base classes for entries (i.e command, operator and constant) infos and registries (collections of all valid entries) 
 │   ├── operator.cpp      # Operator handling implementation
 │   ├── operator.hpp	  # Operator handling interface
-│   ├── rpn.cpp 		  # Main REPL loop
-│   ├── rpn.hpp			  # RPN library interface
+│   ├── rpn.cpp           # Main REPL loop
+│   ├── rpn.hpp           # RPN library interface
 │   ├── token.cpp         # Token parsing and handling implementation
-│   ├── token.hpp		  # Token parsing and handling interface
+│   ├── token.hpp         # Token parsing and handling interface
 │   └── utf_console.hpp   # UTF-8 console output handling (Windows-specific)
 ├── tests/                # Unit tests (see repo for contents)
 ├── main.cpp              # Main CLI application entry point
