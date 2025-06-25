@@ -70,6 +70,7 @@ cd build/tests
 ```
 
 ### Coverage Tests:
+To run the coverage tests and generate a report, follow these steps:
 1 .Download and install OpenCppCoverage tool from [OpenCppCoverage](https://github.com/OpenCppCoverage/OpenCppCoverage)  
 2. Install the [ReportGenerator](https://reportgenerator.io) tool globally, so that it can be used for a C++ projects as well:
 ```bash
@@ -83,6 +84,7 @@ reportgenerator -reports:coverage.xml -targetdir:coverage-report -reporttypes:Ht
 ```
 
 Details about challanges related to generating coverage report in CI are covered in [Code Coverage in CI](code-coverage-readme.md) document.
+Tests coverage is currently maxed up, only lines that should never be reached are not covered, like `throw` statements in branches that should never be entered.
 
 ## 🔍 Project Structure
 ```
