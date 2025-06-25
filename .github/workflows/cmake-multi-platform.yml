@@ -87,7 +87,10 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --build-config ${{ matrix.build_type }} ${env:ADDITIONAL_CTEST_ARGS}
+      run: |
+        ctest --build-config ${{ matrix.build_type }} ${env:ADDITIONAL_CTEST_ARGS}
+        dir
+        pwd
     
     - name: Install OpenCppCoverage
       if: env.RUN_COVERAGE == 'TRUE'
