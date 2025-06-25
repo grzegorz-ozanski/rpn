@@ -83,9 +83,6 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
@@ -95,7 +92,6 @@ jobs:
         if (-not (Test-Path ${env:TEST_LOG_FILE})) {
           Write-Error "Test log file not created, aborting"
         }
-
     
     - name: Install OpenCppCoverage
       if: env.RUN_COVERAGE == 'TRUE'
