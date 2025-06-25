@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
 
 env:
+    ADDITIONAL_CTEST_ARGS: " "
     RUN_COVERAGE: FALSE
     TEST_LOG_FILE: test.log
     README_PATH: README.md
@@ -87,6 +88,7 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      shell: pwsh
       run: |
         ctest --build-config ${{ matrix.build_type }} ${env:ADDITIONAL_CTEST_ARGS}.Split(' ')
         if (-not (Test-Path ${env:TEST_LOG_FILE})) {
