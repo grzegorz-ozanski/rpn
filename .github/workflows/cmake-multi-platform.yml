@@ -60,7 +60,7 @@ jobs:
       shell: pwsh
       run: |
         echo "RUN_COVERAGE=TRUE" >> $env:GITHUB_ENV
-        echo "ADDITIONAL_CTEST_ARGS=""--output-log ${env:TEST_LOG_FILE}""" >> $env:GITHUB_ENV
+        echo "ADDITIONAL_CTEST_ARGS=--output-log ${env:TEST_LOG_FILE}" >> $env:GITHUB_ENV
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
