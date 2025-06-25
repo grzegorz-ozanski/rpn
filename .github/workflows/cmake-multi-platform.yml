@@ -91,9 +91,11 @@ jobs:
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: |
-        ctest --build-config ${{ matrix.build_type }} ${env:ADDITIONAL_CTEST_ARGS}
-        dir
-        pwd
+        ctest --build-config ${{ matrix.build_type }} ${env:ADDITIONAL_CTEST_ARGS}.Split(' ')
+        if (-not (Test-Path ${env:TEST_LOG_FILE})) {
+          Write-Error "Test log file not created, aborting"
+        }
+
     
     - name: Install OpenCppCoverage
       if: env.RUN_COVERAGE == 'TRUE'
