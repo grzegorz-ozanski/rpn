@@ -91,6 +91,11 @@ jobs:
       shell: pwsh
       run: |
         ctest --build-config ${{ matrix.build_type }} ${env:ADDITIONAL_CTEST_ARGS}.Split(' ')
+
+    - name: Check if test log file was created
+      if: env.RUN_COVERAGE == 'TRUE'
+      shell: pwsh
+      run: |
         if (-not (Test-Path ${env:TEST_LOG_FILE})) {
           Write-Error "Test log file not created, aborting"
         }
