@@ -14,10 +14,6 @@ namespace rpn {
         return ReqisteredOperators::contains(token);
     }
 
-    bool Token::is_constant() const {
-        return is_constant(token);
-    }
-
     bool Token::is_command() const {
         return token.starts_with(":");
     }

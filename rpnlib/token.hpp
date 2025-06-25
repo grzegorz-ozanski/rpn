@@ -16,7 +16,6 @@ namespace rpn {
     private:
         std::string token;
         static bool is_constant(const std::string& token);
-        bool is_constant() const;
         bool is_number() const;
         bool is_command() const;
         bool is_operator() const;
