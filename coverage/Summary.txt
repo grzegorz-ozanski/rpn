@@ -1,0 +1,31 @@
+Summary
+  Generated on: 6/29/2025 - 11:11:58 AM
+  Coverage date: 6/29/2025 - 11:11:38 AM
+  Parser: Cobertura
+  Assemblies: 1
+  Classes: 10
+  Files: 10
+  Line coverage: 97.9%
+  Covered lines: 195
+  Uncovered lines: 4
+  Coverable lines: 199
+  Total lines: 464
+  Covered branches: 0
+  Total branches: 0
+  Method coverage: 
+  Full method coverage: 
+  Covered methods: 0
+  Fully covered methods: 0
+  Total methods: 0
+
+D:\a\rpn\rpn\build\tests\Debug\rpn_tests.exe     97.9%
+  command.cpp                                    94.5%
+  command.hpp                                     100%
+  constant.hpp                                    100%
+  entry.hpp                                       100%
+  operator.cpp                                     95%
+  operator.hpp                                    100%
+  rpn.cpp                                         100%
+  rpn.hpp                                         100%
+  token.cpp                                       100%
+  token.hpp                                       100%
