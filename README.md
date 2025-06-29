@@ -70,7 +70,7 @@ cd build/tests
 ```
 
 ### Coverage Tests:
-To run the coverage tests and generate a report, follow these steps:
+To run the coverage tests and generate a report, follow these steps:  
 1 .Download and install OpenCppCoverage tool from [OpenCppCoverage](https://github.com/OpenCppCoverage/OpenCppCoverage)  
 2. Install the [ReportGenerator](https://reportgenerator.io) tool globally, so that it can be used for a C++ projects as well:
 ```bash
