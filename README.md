@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/grzegorz-ozanski/rpn/actions/workflows/cmake-multi-platform.yml/badge.svg)
 [![Coverage](https://grzegorz-ozanski.github.io/rpn/coverage/badge_linecoverage.svg)](https://grzegorz-ozanski.github.io/rpn/coverage/)
-[![Unit tests](https://img.shields.io/badge/Unit%20tests-Passed%3A9%20Failed%3A0-brightgreen)](https://github.com/grzegorz-ozanski/rpn/actions/runs/15895229207)
+[![Unit tests](https://img.shields.io/badge/Unit%20tests-Passed%3A9%20Failed%3A0-brightgreen)](https://github.com/grzegorz-ozanski/rpn/actions/runs/15954550229)
 
 A simple Reverse Polish Notation (RPN) calculator written in modern C++.
 
